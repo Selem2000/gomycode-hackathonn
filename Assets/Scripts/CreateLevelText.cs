@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CreateLevelText : MonoBehaviour
@@ -18,6 +17,8 @@ public class CreateLevelText : MonoBehaviour
 
     private int activateSelectorIndex = -1;
 
+    private List<GameObject> Selectors = new List<GameObject>();
+
     private List<string> levelOne = new List<string>
     {
         "Title","Second Title","Paragraph"
@@ -32,6 +33,7 @@ public class CreateLevelText : MonoBehaviour
     {
         createText();
         createSelector();
+
     }
 
    
@@ -44,7 +46,11 @@ public class CreateLevelText : MonoBehaviour
             element.onClick.AddListener(() =>
             {
                 activateSelectorIndex = levelOne.FindIndex(e => e.Contains(text));
-                
+                foreach(GameObject selector in Selectors)
+                {
+                        selector.SetActive(false);
+                }
+                Selectors[activateSelectorIndex].SetActive(true);
             });
         }
     }
@@ -54,6 +60,7 @@ public class CreateLevelText : MonoBehaviour
         {
             GameObject element = addselector(text + " {");
             element.SetActive(false);
+            Selectors.Add(element);
         }
     }
 
