@@ -16,9 +16,12 @@ public class CreateLevelText : MonoBehaviour
     private GameObject Selector;
 
     public GameObject Color;
+    public GameObject MarginTop;
 
     [SerializeField]
     private Button AddColor;
+    [SerializeField]
+    private Button AddMarginTop;
 
     private int activateSelectorIndex = -1;
 
@@ -46,8 +49,7 @@ public class CreateLevelText : MonoBehaviour
         createText();
         createSelector();
         addColorAtribut();
-        
-
+        addMarginTopAtribut();
     }
     private void Update()
     {
@@ -122,7 +124,6 @@ public class CreateLevelText : MonoBehaviour
         {
             ColorDropdown.options.Add(new Dropdown.OptionData() { text = col });
         }
-        Debug.Log(ColorDropdown.GetInstanceID());
         TMP_Text value = color.transform.GetChild(0).GetComponent<TMP_Text>();
         value.text = "color : " + ColorDropdown.options[ColorDropdown.value].text;
         ColorDropdown.onValueChanged.AddListener(delegate
@@ -158,6 +159,26 @@ public class CreateLevelText : MonoBehaviour
         }
     } 
 
+    public void MarginTopAtribut(GameObject marginTop)
+    {
+        Slider marginTopSlider = marginTop.transform.GetChild(1).GetComponent<Slider>();
+        TMP_Text value = marginTop.transform.GetChild(0).GetComponent<TMP_Text>();
+
+        value.text = "margin-top : " + marginTopSlider.value;
+        Debug.Log(marginTopSlider);
+        marginTopSlider.onValueChanged.AddListener(delegate
+        {
+            addMarginTop(marginTopSlider);
+            value.text = "margin-top : " + marginTopSlider.value *10;
+        });
+    }
+
+    public void addMarginTop(Slider marginTopSlider)
+    {
+        Transform localPosition = elements[activateSelectorIndex].GetComponentInChildren<TMP_Text>().transform;
+        elements[activateSelectorIndex].GetComponentInChildren<TMP_Text>().transform.position += new Vector3(0, marginTopSlider.value, 0) *400f *Time.deltaTime;
+    }
+
     public void addColorAtribut()
     {
         AddColor.onClick.AddListener(() =>
@@ -167,8 +188,18 @@ public class CreateLevelText : MonoBehaviour
             color.transform.SetParent(content.transform, false);
 
             ColorAtrribut(color);
+        });
+    }
 
-            
+    public void addMarginTopAtribut()
+    {
+        AddMarginTop.onClick.AddListener(() =>
+        {
+            GameObject marginTop = Instantiate(MarginTop);
+            VerticalLayoutGroup content = Selectors[activateSelectorIndex].GetComponentInChildren<VerticalLayoutGroup>();
+            marginTop.transform.SetParent(content.transform, false);
+
+            MarginTopAtribut(marginTop);
         });
     }
 }
